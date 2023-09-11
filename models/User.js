@@ -1,6 +1,47 @@
-import { v4 as uuidv4 } from 'uuid';
-import { mongoose, Schema } from 'mongoose';
+const path = require('path');
+const fs = require('fs');
 
+const users = [];
+
+module.exports = class User {
+    constructor(userName, tag, email, password, birthDate){
+        this.userName = userName;
+        this.tag = tag;
+        this.email = email;
+        this.password = password;
+        this.birthDate = birthDate;
+    };
+
+    save() {
+        const p = path.join(
+            path.dirname(process.mainModule.filename),
+            'data',
+            'users.json'
+        );
+        fs.readFile(p, (err, fileContent) => {
+            let products = [];
+            if(!err) {
+                users = JSON.parse(fileContent);
+            };
+            users.push(this);
+            fs.writeFile(p, JSON.stringify(users), (err) => {
+                console.log(err);
+            });
+        });
+    };
+
+    static fetchAll() {
+        fs.readFile(p, (err, fileContent) => {
+            if(err) {
+                return [];
+            };
+            return JSON.parse(fileContent);
+        });
+        return users;
+    };
+}
+
+/*
 const userSchema = mongoose.Schema({
     id: {
         type: String,
@@ -40,3 +81,4 @@ const userSchema = mongoose.Schema({
 })
 
 export const User = mongoose.model('user', userSchema);
+*/

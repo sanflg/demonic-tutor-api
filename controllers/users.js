@@ -1,3 +1,4 @@
+/*
 import { v4 as uuidv4 } from 'uuid';
 import { logRequest, logResponse } from '../controllers/baseController.js';
 
@@ -43,3 +44,4 @@ export const patchUser = (req, res) => {
     if (userTag) user.userTag = userTag;
     logResponse(`User with id ${id} has been updated`, res);
 };
+*/
