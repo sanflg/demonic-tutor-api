@@ -1,4 +1,4 @@
-# NodeJS-LearningRepo
+# Demonic-Tutor-API
 
 ## For nodemon on debbuging
 1) Run ```npm install -g nodemon```. Installd globaly so any terminal can recognize the command on any context.
