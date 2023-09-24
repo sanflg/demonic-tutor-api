@@ -4,21 +4,26 @@ const User = require('../models/User');
 const errorHandler = require('../callUtils/errorHandler');
 const callHandler = require('../callUtils/callHandler');
 
-exports.getUserById = function(req, res, next) {
+exports.getUserById = function(req, res) {
     const id = req.params.id;
-    User.getUserById(user => {
-        if (user !== null) callHandler.handleWithBody(req.baseUrl, res, req, 200, user);
-        else errorHandler.notFound(res, `User with ID '${id}' not found.`)
-    }, id);
+    User.getUserById(id)
+    .then(([rows, metadata]) => {
+        console.log(rows)
+        if(rows.length === 0) errorHandler.notFound(res, `User with ID '${id}' not found.`);
+        else callHandler.handleWithBody(res, req, 200, rows[0]);
+    })
+    .catch(err => console.log(err));
 };
 
-exports.getUsers = function(req, res, next) {
-    User.fetchAll((users) => {
-        callHandler.handleWithBody(req.baseUrl, res, req, 200, users)
-    });
+exports.getUsers = function(req, res) {
+    User.fetchAll()
+    .then(([rows, metadata]) => {
+        callHandler.handleWithBody(res, req, 200, rows)
+    })
+    .catch(err => console.log(err));
 };
 
-exports.createUser = function(req, res, next) {
+exports.createUser = function(req, res) {
     const user = new User (
         req.body.userName,
         req.body.tag,
@@ -26,15 +31,29 @@ exports.createUser = function(req, res, next) {
         req.body.password,
         req.body.birthDate
         );
-    user.save();
-    callHandler.handleWithBody(req.baseUrl, res, req, 201, user)
+    user.save()
+    .then(() => {
+            callHandler.handleWithBody(res, req, 201, user);
+        }
+    );
 };
 
-/*
-export const deleteUser = (req, res) => {
-    const { id } = req.params;
-    logRequest(serv, "deleteUser", id);
-    users = users.filter((user) => user.id !== id);
-    logResponse(`User with id "${id}" deleted.`, res);
+exports.deleteUser = function(req, res) {
+    const id = req.params.id
+    User.getUserById(id)
+    .then(([rows, metadata]) => {
+        console.log(rows)
+        if (rows.length === 0) {
+            errorHandler.notFound(res, `User with ID '${id}' not found.`);
+        }
+        else {
+            User.deleteUser(id)
+            .then(() => {
+                callHandler.handle(res, req, 204)
+            });
+        };
+    })
+    .catch(err => console.log(err));
 };
-*/
+
+

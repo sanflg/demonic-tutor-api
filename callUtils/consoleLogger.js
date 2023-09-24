@@ -1,14 +1,24 @@
-function logResponse(message) {
-    console.log(`RESPONSE: ${JSON.stringify(message)}.`);
+function logResponse(res) {
+    console.log(
+        `RESPONSE *********
+        - Status: ${res.statusCode}
+        - Body: ${JSON.stringify(res.body)}`
+    );
 };
 
-function logRequest(serv, method, message) {
-    console.log(`CALL - Service: '${serv}' - Method: '${method}' - Body: ${JSON.stringify(message)}'.`);
+function logRequest(req) {
+    console.log(
+        `CALL *********
+        - Service: '${req.baseUrl}' 
+        - Method: '${req.method}' 
+        - Params: '${JSON.stringify(req.params)}' 
+        - Body: ${JSON.stringify(req.body)}'`
+    );
 };
 
-function logAndSendResponse(res, message) {
-    logResponse(message);
-    res.send(message);
+function logAndSendResponse(res) {
+    logResponse(res);
+    res.send(res.body);
 };
 
 module.exports = { logResponse, logRequest, logAndSendResponse };

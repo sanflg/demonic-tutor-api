@@ -8,7 +8,8 @@ function generalErrorHandling(res, errorCode, errorMessage, moreData) {
         errorMessage: errorMessage,
         moreData: moreData
     };
-    consoleLogger.logAndSendResponse(res, errorResponse);
+    res.body = errorResponse;
+    consoleLogger.logAndSendResponse(res);
 };
 
 function notFound(res, message) {

@@ -1,7 +1,7 @@
 const path = require('path');
 
 const errorHandler = require('../callUtils/errorHandler.js');
-const consoleLogger = require('../callUtils/consoleLogger.js');
+const callHandler = require('../callUtils/callHandler');
 
 const TPAMagic = {
     version: 'v1',
@@ -15,13 +15,9 @@ const TPAMagic = {
     }
 };
 
-exports.getTPA = function (req, res, next) {
-    consoleLogger.logRequest(req.baseUrl, req.method, req.body);
-
-    res.set('Content-Type', 'application/json');
-
+exports.getTPA = function (req, res) {
     if (req.method !== 'GET') {
-        errorHandler(res, 403,
+        errorHandler.generalErrorHandling(res, 405,
             `Only 'GET' method allowed to TPAMagic (Third Party API).`,
             `For more info on TPAMagic api, check 'https://docs.magicthegathering.io/'.`
         );
@@ -29,7 +25,7 @@ exports.getTPA = function (req, res, next) {
         fetch(new Request(`${TPAMagic.protocol}${TPAMagic.host}/${TPAMagic.version}${req.baseUrl.substring(9)}`, TPAMagic))
             .then((ATPresponse) => ATPresponse.json())
             .then((request) => {
-                consoleLogger.logAndSendResponse(res, request);
+                callHandler.handleWithBody(res, req, res.statusCode, request);
             });
     };
 };

@@ -1,14 +1,15 @@
 const consoleLogger = require('./consoleLogger');
 
-function handleWithBody(service, res, req, statusCode, body) {
-    consoleLogger.logRequest(service, req.method, req.body);
+function handleWithBody(res, req, statusCode, body) {
+    consoleLogger.logRequest(req);
     res.set('Content-Type', 'application/json');
     res.statusCode = statusCode;
-    consoleLogger.logAndSendResponse(res, body);
+    res.body = body;
+    consoleLogger.logAndSendResponse(res);
 };
 
-function handle(res, statusCode) {
-    handleWithBody(res, statusCode, '');
+function handle(res, req, statusCode) {
+    handleWithBody(res, req, statusCode, '');
 };
 
 module.exports = { handleWithBody, handle };

@@ -15,7 +15,6 @@ router.use('/subtypes', TPAMagicCalls);
 router.use('/supertypes', TPAMagicCalls);
 router.use('/formats', TPAMagicCalls);
 
-
 router.use((req, res, next) =>
     errorHandler.notFound(res, `Available urls for TPAMagic api listed in 'https://docs.magicthegathering.io/'.`));
 

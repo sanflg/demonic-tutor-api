@@ -9,8 +9,11 @@ const router = express.Router();
 router.get('/:id', UserCalls.getUserById);
 router.get('/', UserCalls.getUsers);
 router.post('/', UserCalls.createUser);
-//router.delete('/', deleteUser);
+router.delete('/:id', UserCalls.deleteUser);
 
-router.use((req, res, next) => errorHandler.notFound(res, `List of available endpoints: 'ADD SOMETHING HERE'.`));
+router.use((req, res) => errorHandler.notFound(
+  res, 
+  `List of available endpoints: 'ADD SOMETHING HERE'.`
+));
 
 exports.router = router;
