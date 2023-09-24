@@ -1,5 +1,22 @@
 # Demonic-Tutor-API
 
+## Env variables:
+Add envVars.js file in root with structure:
+
+```
+const envVars = {
+  db: {
+    host: '',
+    user: '',
+    database: '',
+    password: ''
+  },
+  port: 1111
+};
+
+module.exports = envVars;
+```
+
 ## For nodemon on debbuging
 1) Run ```npm install -g nodemon```. Installd globaly so any terminal can recognize the command on any context.
 2) go to ```.vscode>launch.json``` and following code.
@@ -33,6 +50,3 @@
 4) Check (execute setImmediate)
 5) close callbacks
 6) process.exit
-
-## HTML
-Template engine: Pug (Jade)
