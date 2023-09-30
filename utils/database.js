@@ -1,11 +1,15 @@
-const mysql = require('mysql2');
+const Sequelize = require('sequelize');
 const db = require('../envVars').db;
 
-const connectionPool = mysql.createPool({
-  host: db.host,
-  user: db.user,
-  database: db.database,
-  password: db.password
-});
+/** Start Sequlize ORM with DDBB credentials.*/
+const sequelize = new Sequelize(
+	db.database,
+	db.user,
+	db.password,
+	{
+		dialect: 'mysql',
+		host: db.host
+	}
+);
 
-module.exports = connectionPool.promise();
+module.exports = sequelize;

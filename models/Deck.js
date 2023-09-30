@@ -2,30 +2,25 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../utils/database');
 
-const User = sequelize.define('user', {
+const Deck = sequelize.define('deck', {
 	id: {
 		type: Sequelize.INTEGER,
 		autoIncrement: true,
 		allowNull: false,
-		primaryKey: true,
+		primaryKey: true
 	},
-	userName: {
+	name: {
 		type: Sequelize.STRING,
-		allowNull: false,
-		unique: true
+		allowNull: false
 	},
-	email: {
-		type: Sequelize.STRING,
-		allowNull: false,
-		unique: true,
-		validate: {
-			isEmail: true
-		}
-	},
-	password: {
+  archetype: {
+    type: Sequelize.STRING,
+		allowNull: false
+  },
+	colorName: {
 		type: Sequelize.STRING,
 		allowNull: false
 	}
 });
 
-module.exports = User
+module.exports = Deck
