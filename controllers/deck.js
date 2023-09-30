@@ -1,6 +1,7 @@
 const Deck = require('../models/Deck');
 const User = require('../models/User');
 const UserController = require('./user');
+const CardDeckController = require('./cardDeck');
 const errorHandler = require('../utils/callUtils/errorHandler');
 const callHandler = require('../utils/callUtils/callHandler');
 
@@ -10,11 +11,10 @@ const callHandler = require('../utils/callUtils/callHandler');
  * @param {Express.Response} res
  * */
 async function getDeckById(req, res) {
-  const user = await User.findByPk(extractUserIdFromUrl(req));
-  if (user == null) return errorHandler.notFound(res, req, `User with ID '${extractUserIdFromUrl(req)}' not found.`);
-  const deck = await Deck.findByPk(req.params.id);
-  if (deck == null) return errorHandler.notFound(res, req, `Deck with ID '${req.params.id}' not found.`);
-  callHandler.handleWithBody(res, req, 200, deck);
+  let userAndDeck = await CardDeckController.userAndDeck(req);
+  console.log(userAndDeck.error)
+  if (userAndDeck.error != null) return errorHandler.notFound(res, req, userAndDeck.error);
+  callHandler.handleWithBody(res, req, 200, userAndDeck.deck);
 };
 
 /**
@@ -24,11 +24,9 @@ async function getDeckById(req, res) {
  * */
 async function getDecks(req, res) {
   const user = await User.findByPk(extractUserIdFromUrl(req));
-  if (user != null) {
-    const deck = await Deck.findAll({ where: { userId: user.dataValues.id } });
-    return callHandler.handleWithBody(res, req, 200, deck);
-  };
-  return errorHandler.notFound(res, req, `User with ID '${extractUserIdFromUrl(req)}' not found.`);
+  if (user == null) return errorHandler.notFound(res, req, `User with ID '${extractUserIdFromUrl(req)}' not found.`);
+  const deck = await Deck.findAll({ where: { userId: user.dataValues.id } });
+  return callHandler.handleWithBody(res, req, 200, deck);
 };
 
 /**
@@ -54,15 +52,15 @@ async function createDeck(req, res) {
  * @param {Express.Response} res
  * */
 async function updateDeck(req, res) {
-  const deck = await Deck.findByPk(req.params.id);
-  if (deck !== null) {
-    deck.name = null === req.body.name ? deck.name : req.body.name;
-    deck.archetype = null === req.body.archetype ? deck.archetype : req.body.archetype;
-    deck.colorName = null === req.body.colorName ? deck.colorName : req.body.colorName;
-    deck.save();
-    return callHandler.handleWithBody(res, req, 200, deck);
-  };
-  return errorHandler.notFound(res, req, `Deck with ID '${req.params.id}' not found.`);
+  let userAndDeckResult = await CardDeckController.userAndDeck(req);
+  if (userAndDeckResult.error != null) return errorHandler.notFound(res, req, userAndDeckResult.error);
+
+  userAndDeckResult.deck.name = null === req.body.name ? userAndDeckResult.deck.name : req.body.name;
+  userAndDeckResult.deck.archetype = null === req.body.archetype ? userAndDeckResult.deck.archetype : req.body.archetype;
+  userAndDeckResult.deck.colorName = null === req.body.colorName ? userAndDeckResult.deck.colorName : req.body.colorName;
+  userAndDeckResult.deck.save();
+  return callHandler.handleWithBody(res, req, 200, deck);
+
 };
 
 /**
@@ -71,11 +69,9 @@ async function updateDeck(req, res) {
  * @param {Express.Response} res
  * */
 async function deleteDeck(req, res) {
-  const user = await User.findByPk(extractUserIdFromUrl(req));
-  if (user == null) return errorHandler.notFound(res, req, `User with ID '${extractUserIdFromUrl(req)}' not found.`);
-  const deck = await Deck.findByPk(req.params.id);
-  if (deck == null) return errorHandler.notFound(res, req, `Deck with ID '${req.params.id}' not found.`);
-  deck.destroy();
+  let userAndDeckResult = await CardDeckController.userAndDeck(req);
+  if (userAndDeckResult.error != null) return errorHandler.notFound(res, req, userAndDeckResult.error);
+  userAndDeckResult.deck.destroy();
   callHandler.handle(res, req, 204);
 };
 
@@ -84,8 +80,8 @@ async function deleteDeck(req, res) {
  * @param {Express.Request} req
  * */
 function extractUserIdFromUrl(req) {
-  return req.baseUrl.split('/')[3];
-}
+  return req.originalUrl.split('/')[3];
+};
 
 module.exports = { getDeckById, getDecks, createDeck, updateDeck, deleteDeck, extractUserIdFromUrl }
 

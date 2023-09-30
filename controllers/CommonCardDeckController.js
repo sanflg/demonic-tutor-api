@@ -39,7 +39,6 @@ function buildSearchArrayByCardId(cardIdArray) {
  * @param {Callback} callback
  * */
 async function getCardsIdsNotInDDBB(cardArray) {
-  console.log(mapCardsIdAndBuildSearchArray(cardArray))
   const databaseCards = await Card.findAll({ where: { [Op.or]: mapCardsIdAndBuildSearchArray(cardArray) } });
   let cardIdsNotInBBDD = cardArray.cards
     //3- Get only the cards not stored in DDBB

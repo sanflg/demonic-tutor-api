@@ -1,7 +1,7 @@
 const errorHandler = require('../utils/callUtils/errorHandler.js');
 const callHandler = require('../utils/callUtils/callHandler');
 
-const { checkCardsForStorage } = require('./basicCardController');
+const { checkCardsForStorage } = require('./CommonCardDeckController.js');
 
 const TPAMagic = {
 	version: 'v1',

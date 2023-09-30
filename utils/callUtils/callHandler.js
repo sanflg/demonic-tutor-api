@@ -18,19 +18,6 @@ function logAndSendResponse(res) {
  * @param {int} statusCode
  * @param {String} body
  * */
-async function generalCallHandler(res, req, statusCode, body, callback) {
-	callback(handleWithBody(res, req, statusCode, body));
-};
-
-/**
- * General handler for calls with response body: 
- * logs request, sets 'Content-Type' 
- * and sends response after building it.
- * @param {Express.Response} res
- * @param {Express.Request} req
- * @param {int} statusCode
- * @param {String} body
- * */
 function handleWithBody(res, req, statusCode, body) {
 	consoleLogger.logRequest(req);
 	res.set('Content-Type', 'application/json');
@@ -50,4 +37,4 @@ function handle(res, req, statusCode) {
 	handleWithBody(res, req, statusCode, '');
 };
 
-module.exports = { handleWithBody, handle, logAndSendResponse, generalCallHandler };
+module.exports = { handleWithBody, handle, logAndSendResponse };
